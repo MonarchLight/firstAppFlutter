@@ -4,8 +4,9 @@ import '../modules/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final Function deleteTx;
 
-  TransactionList(this.transactions);
+  TransactionList(this.transactions, this.deleteTx);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,15 @@ class TransactionList extends StatelessWidget {
                   elevation: 5,
                   margin: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
                   child: ListTile(
+                    trailing: IconButton(
+                      splashColor: Colors.red,
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.black,
+                      ),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () => deleteTx(transactions[index].id),
+                    ),
                     leading: CircleAvatar(
                       backgroundColor: Theme.of(context).primaryColor,
                       radius: 30,
