@@ -10,70 +10,66 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 475,
-      child: transactions.isEmpty
-          ? Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 10,
+    return transactions.isEmpty
+        ? Column(
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 465,
+                child: Image.asset(
+                  "assets/image/waiting.png",
+                  fit: BoxFit.cover,
                 ),
-                Container(
-                  height: 465,
-                  child: Image.asset(
-                    "assets/image/waiting.png",
-                    fit: BoxFit.cover,
-                  ),
-                )
-              ],
-            )
-          : ListView.builder(
-              itemBuilder: (ctx, index) {
-                return Card(
-                  elevation: 5,
-                  margin: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
-                  child: ListTile(
-                    trailing: IconButton(
-                      splashColor: Colors.red,
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.black,
-                      ),
-                      color: Theme.of(context).errorColor,
-                      onPressed: () => deleteTx(transactions[index].id),
+              )
+            ],
+          )
+        : ListView.builder(
+            itemBuilder: (ctx, index) {
+              return Card(
+                elevation: 5,
+                margin: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
+                child: ListTile(
+                  trailing: IconButton(
+                    splashColor: Colors.red,
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.black,
                     ),
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      radius: 30,
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: FittedBox(
-                          child: Text(
-                            "UAH: ${transactions[index].amount.toStringAsFixed(2)}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
+                    color: Theme.of(context).errorColor,
+                    onPressed: () => deleteTx(transactions[index].id),
+                  ),
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    radius: 30,
+                    child: Padding(
+                      padding: EdgeInsets.all(6),
+                      child: FittedBox(
+                        child: Text(
+                          "UAH: ${transactions[index].amount.toStringAsFixed(2)}",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
-                    title: Text(
-                      transactions[index].title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 18),
-                    ),
-                    subtitle: Text(
-                      DateFormat.yMMMEd().format(transactions[index].date),
-                      style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                    ),
                   ),
-                );
-              },
-              itemCount: transactions.length,
-            ),
-    );
+                  title: Text(
+                    transactions[index].title,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 18),
+                  ),
+                  subtitle: Text(
+                    DateFormat.yMMMEd().format(transactions[index].date),
+                    style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                  ),
+                ),
+              );
+            },
+            itemCount: transactions.length,
+          );
   }
 }
 /*
