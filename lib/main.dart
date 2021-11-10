@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import './modules/transaction.dart';
 import './widgets/chart.dart';
 import './widgets/new_transaction.dart';
@@ -75,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: ctx,
       builder: (_) {
         return NewTransactions(_addNewTransaction);
@@ -90,33 +95,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text(
         'App by Monarch',
       ),
       actions: <Widget>[
         IconButton(
-            onPressed: () {
-              () => _startAddNewTransaction(context);
-            },
+            onPressed: () => _startAddNewTransaction(context),
             icon: Icon(
-              Icons.arrow_drop_down,
-              size: 40,
+              Icons.playlist_add_outlined,
+              size: 30,
             ))
       ],
     );
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+    final txListWidget = Container(
+      height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+          0.9,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
+    final pageBody = SingleChildScrollView(
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          if (isLandscape)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text("Show Chart"),
-                Switch(
+                Switch.adaptive(
                     value: _showChart,
                     onChanged: (val) {
                       setState(() {
@@ -125,34 +136,63 @@ class _MyHomePageState extends State<MyHomePage> {
                     })
               ],
             ),
+          if (!isLandscape)
+            Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.25,
+              child: Chart(_recentTransaction),
+              //color: Theme.of(context).primaryColor,
+            ),
+          if (!isLandscape) txListWidget,
+          if (isLandscape)
             _showChart
                 ? Container(
-                    height: (MediaQuery.of(context).size.height -
+                    height: (mediaQuery.size.height -
                             appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.25,
+                            mediaQuery.padding.top) *
+                        0.8,
                     child: Chart(_recentTransaction),
                     //color: Theme.of(context).primaryColor,
                   )
-                : Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child:
-                        TransactionList(_userTransactions, _deleteTransaction),
-                  ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add,
-          size: 40,
-        ),
-        onPressed: () => _startAddNewTransaction(context),
+                : txListWidget
+        ],
       ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: CupertinoNavigationBar(
+              middle: Text("Test"),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      onPressed: () => _startAddNewTransaction(context),
+                      icon: Icon(
+                        Icons.playlist_add_outlined,
+                        size: 30,
+                      ))
+                ],
+              ),
+            ),
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(
+                      Icons.add,
+                      size: 40,
+                    ),
+                    onPressed: () => _startAddNewTransaction(context),
+                  ),
+          );
   }
 }

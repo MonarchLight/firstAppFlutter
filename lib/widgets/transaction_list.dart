@@ -11,35 +11,46 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
-        ? Column(
-            children: <Widget>[
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 465,
-                child: Image.asset(
-                  "assets/image/waiting.png",
-                  fit: BoxFit.cover,
-                ),
-              )
-            ],
-          )
+        ? LayoutBuilder(builder: (ctx, constraints) {
+            return Column(
+              children: <Widget>[
+                SizedBox(
+                    //height: 10,
+                    ),
+                Container(
+                  height: constraints.maxHeight * 0.95,
+                  child: Image.asset(
+                    "assets/image/waiting.png",
+                    fit: BoxFit.cover,
+                  ),
+                )
+              ],
+            );
+          })
         : ListView.builder(
             itemBuilder: (ctx, index) {
               return Card(
                 elevation: 5,
                 margin: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
                 child: ListTile(
-                  trailing: IconButton(
-                    splashColor: Colors.red,
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.black,
-                    ),
-                    color: Theme.of(context).errorColor,
-                    onPressed: () => deleteTx(transactions[index].id),
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 420
+                      ? TextButton.icon(
+                          onPressed: () => deleteTx(transactions[index].id),
+                          icon: Icon(Icons.delete, color: Colors.black),
+                          label: Text(
+                            "Delete",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        )
+                      : IconButton(
+                          splashColor: Colors.red,
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.black,
+                          ),
+                          color: Theme.of(context).errorColor,
+                          onPressed: () => deleteTx(transactions[index].id),
+                        ),
                   leading: CircleAvatar(
                     backgroundColor: Theme.of(context).primaryColor,
                     radius: 30,
