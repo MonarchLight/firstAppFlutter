@@ -21,14 +21,23 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter App',
-      theme: ThemeData(
-        primarySwatch: Colors.amber,
-      ),
-      home: MyHomePage(),
-    );
+    return Platform.isIOS
+        ? CupertinoApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter App',
+            theme: CupertinoThemeData(
+              primaryColor: Colors.amber,
+            ),
+            home: MyHomePage(),
+          )
+        : MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter App',
+            theme: ThemeData(
+              primarySwatch: Colors.amber,
+            ),
+            home: MyHomePage(),
+          );
   }
 }
 
@@ -40,20 +49,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _userTransactions = [
-    /*Transaction(
-      id: "t1",
-      title: "Food",
-      amount: 276.10,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: "t2",
-      title: "Fuel",
-      amount: 1210.50,
-      date: DateTime.now(),
-    ),*/
-  ];
+  final List<Transaction> _userTransactions = [];
 
   List<Transaction> get _recentTransaction {
     return _userTransactions.where((tx) {
@@ -117,7 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
           0.9,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
-    final pageBody = SingleChildScrollView(
+    final pageBody = SafeArea(
+        child: SingleChildScrollView(
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -159,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 : txListWidget
         ],
       ),
-    );
+    ));
 
     return Platform.isIOS
         ? CupertinoPageScaffold(
