@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import './Transaction_item.dart';
+
 import '../modules/transaction.dart';
 
 class TransactionList extends StatelessWidget {
@@ -29,94 +30,12 @@ class TransactionList extends StatelessWidget {
           })
         : ListView.builder(
             itemBuilder: (ctx, index) {
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
-                child: ListTile(
-                  trailing: MediaQuery.of(context).size.width > 420
-                      ? TextButton.icon(
-                          onPressed: () => deleteTx(transactions[index].id),
-                          icon: Icon(Icons.delete, color: Colors.black),
-                          label: Text(
-                            "Delete",
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        )
-                      : IconButton(
-                          splashColor: Colors.red,
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.black,
-                          ),
-                          color: Theme.of(context).errorColor,
-                          onPressed: () => deleteTx(transactions[index].id),
-                        ),
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    radius: 30,
-                    child: Padding(
-                      padding: EdgeInsets.all(6),
-                      child: FittedBox(
-                        child: Text(
-                          "UAH: ${transactions[index].amount.toStringAsFixed(2)}",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    transactions[index].title,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 18),
-                  ),
-                  subtitle: Text(
-                    DateFormat.yMMMEd().format(transactions[index].date),
-                    style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                  ),
-                ),
+              return TransactionItem(
+                deleteTx: deleteTx,
+                transaction: transactions[index],
               );
             },
             itemCount: transactions.length,
           );
   }
 }
-/*
-Card(
-                  //color: Colors.purpleAccent[100],
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).primaryColor,
-                                width: 2)),
-                        child: Text(
-                          "UAH: ${transactions[index].amount.toStringAsFixed(2)}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              transactions[index].title,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 18),
-                            ),
-                            
-                          ]),
-                    ],
-                  ),
-                );
-*/
