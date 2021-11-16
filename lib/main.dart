@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget with WidgetsBindingObserver {
   // String titleInput;
   // String amountInput;
   @override
@@ -60,7 +60,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool _showChart = false;
+/*
+  @override
+  void initState() {
+    
+    WidgetsBinding.instance!.addObserver(this);
+    super.initState();
+  }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState) {}
+
+  @override
+  void dispose() {
+   
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+*/
   void _addNewTransaction(String txTitle, double txAmount, DateTime txDate) {
     final newTx = Transaction(
         title: txTitle,
